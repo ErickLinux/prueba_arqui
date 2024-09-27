@@ -54,7 +54,7 @@
         // Función para obtener el último estado de la API
         async function obtenerUltimoEstado() {
             try {
-                const respuesta = await fetch('http://192.168.1.39:3000/estado/ultimo'); // URL de tu API
+                const respuesta = await fetch('https://yellow-bush-0a21bb70f.5.azurestaticapps.net/'); // Cambia a tu URL de Azure
                 const dato = await respuesta.json();
 
                 if (respuesta.ok) {
@@ -64,7 +64,7 @@
                     
                     // Cambiar la imagen según el estado
                     const ledImage = document.getElementById('ledImage');
-                    ledImage.src = dato.estado ? 'led_on.png' : 'led_off.png'; // Asegúrate de que las imágenes estén en la misma carpeta que tu HTML
+                    ledImage.src = dato.estado ? 'https://tu-app.azurewebsites.net/led_on.png' : 'https://tu-app.azurewebsites.net/led_off.png'; // Cambia la URL según corresponda
                 } else {
                     document.getElementById('estado').innerText = 'No hay datos disponibles';
                     document.getElementById('fechaHora').innerText = '';
@@ -84,5 +84,5 @@
         // Llamar a la función cuando se cargue la página por primera vez
         window.onload = obtenerUltimoEstado;
     </script>
-  </body>
+</body>
 </html>
