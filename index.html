@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado del Sensor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 30px; /* Aumentar el padding */
+            border-radius: 15px; /* Aumentar el radio de las esquinas */
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            max-width: 400px; /* Limitar el ancho máximo del contenedor */
+        }
+        h1 {
+            color: #333;
+            font-size: 32px; /* Aumentar el tamaño del título */
+        }
+        .status {
+            font-size: 28px; /* Aumentar el tamaño del estado */
+            font-weight: bold;
+            color: #007BFF;
+        }
+        .timestamp, .id {
+            font-size: 22px; /* Aumentar el tamaño de la fecha y ID */
+            color: #555;
+        }
+        img {
+            margin-bottom: 30px; /* Espaciado debajo de la imagen */
+            width: 150px; /* Aumentar el tamaño de la imagen */
+            height: auto; /* Mantener la proporción de la imagen */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Estado del Sensor</h1>
+        <img id="ledImage" src="" alt="Estado del LED" /> <!-- Imagen arriba del estado -->
+        <div id="estado" class="status">Cargando...</div>
+        <div id="fechaHora" class="timestamp"></div>
+        <div id="idEstado" class="id"></div>
+    </div>
+
+    <script>
+        // Función para obtener el último estado de la API
+        async function obtenerUltimoEstado() {
+            try {
+                const respuesta = await fetch('http://192.168.1.39:3000/estado/ultimo'); // URL de tu API
+                const dato = await respuesta.json();
+
+                if (respuesta.ok) {
+                    document.getElementById('estado').innerText = dato.estado ? 'Activo (true)' : 'Inactivo (false)';
+                    document.getElementById('fechaHora').innerText = `Fecha y Hora: ${new Date(dato.fecha_hora).toLocaleString()}`;
+                    document.getElementById('idEstado').innerText = `ID: ${dato.id}`;
+                    
+                    // Cambiar la imagen según el estado
+                    const ledImage = document.getElementById('ledImage');
+                    ledImage.src = dato.estado ? 'led_on.png' : 'led_off.png'; // Asegúrate de que las imágenes estén en la misma carpeta que tu HTML
+                } else {
+                    document.getElementById('estado').innerText = 'No hay datos disponibles';
+                    document.getElementById('fechaHora').innerText = '';
+                    document.getElementById('idEstado').innerText = '';
+                }
+            } catch (error) {
+                document.getElementById('estado').innerText = 'Error al obtener el estado';
+                document.getElementById('fechaHora').innerText = '';
+                document.getElementById('idEstado').innerText = '';
+                console.error('Error al obtener el estado:', error);
+            }
+        }
+
+        // Llamar a la función cada segundo
+        setInterval(obtenerUltimoEstado, 1000); // 1000 ms = 1 segundo
+
+        // Llamar a la función cuando se cargue la página por primera vez
+        window.onload = obtenerUltimoEstado;
+    </script>
+  </body>
+</html>
