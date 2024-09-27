@@ -54,35 +54,35 @@
         // Función para obtener el último estado de la API
         async function obtenerUltimoEstado() {
             try {
-                const respuesta = await fetch('https://yellow-bush-0a21bb70f.5.azurestaticapps.net/'); // Cambia a tu URL de Azure
-                const dato = await respuesta.json();
-
-                if (respuesta.ok) {
-                    document.getElementById('estado').innerText = dato.estado ? 'Activo (true)' : 'Inactivo (false)';
-                    document.getElementById('fechaHora').innerText = `Fecha y Hora: ${new Date(dato.fecha_hora).toLocaleString()}`;
-                    document.getElementById('idEstado').innerText = `ID: ${dato.id}`;
-                    
-                    // Cambiar la imagen según el estado
-                    const ledImage = document.getElementById('ledImage');
-                    ledImage.src = dato.estado ? 'https://tu-app.azurewebsites.net/led_on.png' : 'https://tu-app.azurewebsites.net/led_off.png'; // Cambia la URL según corresponda
-                } else {
-                    document.getElementById('estado').innerText = 'No hay datos disponibles';
-                    document.getElementById('fechaHora').innerText = '';
-                    document.getElementById('idEstado').innerText = '';
+                const respuesta = await fetch('https://yellow-bush-0a21bb70f.5.azurestaticapps.net/estado/ultimo'); // Cambia a tu URL de Azure
+                
+                if (!respuesta.ok) {
+                    throw new Error(`HTTP error! status: ${respuesta.status}`);
                 }
+    
+                const dato = await respuesta.json();
+                
+                // Asignar los valores a los elementos del DOM
+                document.getElementById('estado').innerText = dato.estado ? 'Activo (true)' : 'Inactivo (false)';
+                document.getElementById('fechaHora').innerText = `Fecha y Hora: ${new Date(dato.fecha_hora).toLocaleString()}`;
+                document.getElementById('idEstado').innerText = `ID: ${dato.id}`;
+                
+                // Cambiar la imagen según el estado
+                const ledImage = document.getElementById('ledImage');
+                ledImage.src = dato.estado ? 'https://tu-app.azurewebsites.net/led_on.png' : 'https://tu-app.azurewebsites.net/led_off.png';
             } catch (error) {
+                console.error('Error al obtener el estado:', error);
                 document.getElementById('estado').innerText = 'Error al obtener el estado';
                 document.getElementById('fechaHora').innerText = '';
                 document.getElementById('idEstado').innerText = '';
-                console.error('Error al obtener el estado:', error);
             }
         }
-
+    
         // Llamar a la función cada segundo
         setInterval(obtenerUltimoEstado, 1000); // 1000 ms = 1 segundo
-
+    
         // Llamar a la función cuando se cargue la página por primera vez
         window.onload = obtenerUltimoEstado;
-    </script>
+    </script>    
 </body>
 </html>
