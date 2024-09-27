@@ -7,7 +7,9 @@ const app = express();
 
 const PORT = process.env.PORT;
 
-app.use(cors()); // Habilitar CORS
+app.use(cors({
+    origin: ['http://localhost:3001', 'https://yellow-bush-0a21bb70f.5.azurestaticapps.net'] // Permitir ambos orígenes
+})); // Habilitar CORS
 app.use(express.json());
 
 app.get('/estado', async (req, res) => {
